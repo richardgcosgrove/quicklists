@@ -30,10 +30,12 @@
                 <ion-checkbox [checked]="item.checked" (click)="toggleItem(item)" class="checklist-item">
                 </ion-checkbox>
             </ion-item>
-            <ion-item-options>
+            <<ion-item-options side="left">
                 <button light (click)="renameItem(item)">
                     <ion-icon name="clipboard"></ion-icon>
                 </button>
+            </ion-item-options>
+            <ion-item-options side="right">
                 <button danger (click)="removeItem(item)">
                     <ion-icon name="trash">
                         </ion-icon>
