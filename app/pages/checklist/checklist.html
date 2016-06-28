@@ -8,7 +8,7 @@
 
     <ion-navbar secondary>
         <ion-title>
-            CHECKLIST TITLE
+            {{checklist.title}}
         </ion-title>
         <ion-buttons end>
             <button (click)="uncheckItems()">
@@ -23,7 +23,6 @@
 </ion-header>
 
 <ion-content>
-
     <ion-list no-lines>
         <ion-item-sliding *ngFor="let item of checklist.items" class="home-sliding--item">
             <ion-item>
@@ -37,7 +36,7 @@
                 </button>
                 <button danger (click)="removeItem(item)">
                     <ion-icon name="trash">
-                        <- /ion-icon>
+                        </ion-icon>
                 </button>
             </ion-item-options>
         </ion-item-sliding>
