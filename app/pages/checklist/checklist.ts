@@ -1,6 +1,5 @@
 import { Component } from '@angular/core';
-import { NavController } from 'ionic-angular';
-import {Observable} from 'rxjs/Observable';
+import { NavController, NavParams, Alert } from 'ionic-angular';
 
 
 /*
@@ -15,60 +14,73 @@ import {Observable} from 'rxjs/Observable';
 export class ChecklistPage {
 
     checklist: any;
-    checklistObserver: any;
 
-    constructor(public title: string, public items: any[]) {
+    constructor(public nav: NavController, public navParams: NavParams) {
+        this.checklist = this.navParams.get('checklist');
+    }
 
-        this.items = items;
-
-        this.checklist = Observable.create(observer => {
-            this.checklistObserver = observer;
+    addItem(): void {
+        let prompt = Alert.create({
+            title: 'Add Item',
+            message: 'Enter the name of the task for this checklist below:',
+            inputs: [
+                {
+                    name: 'name'
+                }
+            ],
+            buttons: [
+                {
+                    text: 'Cancel'
+                },
+                {
+                    text: 'Save',
+                    handler: data => {
+                        this.checklist.addItem(data.name);
+                    }
+                }
+            ]
         });
-
-    }
-
-    addItem(item): void {
-
-        this.items.push({
-            title: item,
-            checked: false
-        });
-
-        this.checklistObserver.next(true);
-    }
-
-    removeItem(item): void {
-
-        let index = this.items.indexOf(item);
-
-        if (index > -1) {
-            this.items.splice(index, 1);
-        }
-
-        this.checklistObserver.next(true);
-    }
-
-    renameItem(item, title): void {
-
-        let index = this.items.indexOf(item);
-
-        if (index > -1) {
-            this.items[index].title = title;
-        }
-
-        this.checklistObserver.next(true);
-
-    }
-
-    setTitle(title): void {
-        this.title = title;
-        this.checklistObserver.next(true);
-
+        this.nav.present(prompt);
     }
 
     toggleItem(item): void {
-        item.checked = !item.checked;
-        this.checklistObserver.next(true);
+        this.checklist.toggleItem(item);
+    }
+
+    removeItem(item): void {
+        this.checklist.removeItem(item);
+    }
+
+    renameItem(item): void {
+        let prompt = Alert.create({
+            title: 'Rename Item',
+            message: 'Enter the new name of the task for this checklist below:',
+            inputs: [
+                {
+                    name: 'name'
+                }
+            ],
+            buttons: [
+                {
+                    text: 'Cancel'
+                },
+                {
+                    text: 'Save',
+                    handler: data => {
+                        this.checklist.renameItem(item, data.name);
+                    }
+                }
+            ]
+        });
+        this.nav.present(prompt);
+    }
+
+    uncheckItems(): void {
+        this.checklist.items.forEach((item) => {
+            if (item.checked) {
+                this.checklist.toggleItem(item);
+            }
+        });
     }
 
 }
