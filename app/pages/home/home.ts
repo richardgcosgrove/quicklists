@@ -1,16 +1,27 @@
 import {Component} from '@angular/core';
-import {NavController, Alert} from 'ionic-angular';
+import {NavController, Alert, Storage, LocalStorage } from 'ionic-angular';
 import {ChecklistPage} from '../checklist/checklist';
 import {ChecklistModel} from '../../providers/checklist-model/checklist-model';
 import {Data} from '../../providers/data/data';
+import {IntroPage} from '../intro/intro';
 
 @Component({
     templateUrl: 'build/pages/home/home.html'
 })
 export class HomePage {
+
+    local: Storage;
     checklists: ChecklistModel[] = [];
 
     constructor(public nav: NavController, public dataService: Data) {
+
+        this.local = new Storage(LocalStorage);
+        this.local.get('introShown').then((result) => {
+            if (!result) {
+                this.local.set('introShown', true);
+                this.nav.setRoot(IntroPage);
+            }
+        });
 
         this.dataService.getData().then((checklists) => {
 
@@ -51,7 +62,7 @@ export class HomePage {
                     text: 'Save',
                     handler: data => {
                         let newChecklist = new ChecklistModel(data.name, []);
-                        
+
                         this.checklists.push(newChecklist);
                         newChecklist.checklist.subscribe(update => {
                             this.save();
@@ -113,6 +124,7 @@ export class HomePage {
     }
 
     save(): void {
+        this.dataService.save(this.checklists);
     }
 
 }
